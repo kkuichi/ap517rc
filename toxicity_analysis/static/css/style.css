@@ -1,0 +1,65 @@
+/* Тёмный фон и белый текст */
+body {
+    background-color: #4e4d4d;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Стили для кнопок */
+button {
+    background-color: #1e88e5;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #1565c0;
+}
+
+/* Поле ввода */
+input, textarea {
+    background-color: #333;
+    color: white;
+    border: 1px solid #555;
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+select {
+        width: 100%; /* Занимает всю доступную ширину */
+        max-width: 300px; /* Максимальная ширина */
+        padding: 10px; /* Внутренний отступ */
+        margin-top: 5px; /* Отступ сверху */
+        border: 1px solid #ccc; /* Граница */
+        border-radius: 5px; /* Скругленные углы */
+        font-size: 16px; /* Размер шрифта */
+        background-color: #fff; /* Цвет фона */
+        appearance: none; /* Убираем стандартные стрелки браузера */
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23000"><path d="M7 10l5 5 5-5z"/></svg>'); /* Кастомная стрелка */
+        background-repeat: no-repeat;
+        background-position: right 10px center; /* Позиция стрелки */
+        cursor: pointer; /* Указатель мыши */
+    }
+
+    /* Стиль при наведении */
+    select:hover {
+        border-color: #007bff; /* Изменение цвета границы */
+    }
+
+    /* Стиль при фокусе */
+    select:focus {
+        outline: none; /* Убираем стандартный outline */
+        border-color: #007bff; /* Изменение цвета границы */
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Тень */
+    }
+
