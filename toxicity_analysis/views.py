@@ -12,7 +12,7 @@ from captum.attr import IntegratedGradients
 from .models import UserRating
 from django.shortcuts import render, redirect
 
-# Загружаем модель
+# Načítanie modelu
 model_name = "minuva/MiniLMv2-toxic-jigsaw"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForSequenceClassification.from_pretrained(model_name)
@@ -21,7 +21,7 @@ model.eval()
 labels = ["toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate"]
 
 
-# Функция для предсказания вероятностей
+# Funkcia na predpovedanie pravdepodobnosti
 def predict_proba(texts):
     inputs = tokenizer(list(texts), padding=True, truncation=True, return_tensors="pt")
     with torch.no_grad():
@@ -31,66 +31,66 @@ def predict_proba(texts):
 
 def generate_integrated_gradients_explanation(text):
     try:
-        # Токенизация текста
+        # Tokenizácia textu
         inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=512)
         input_ids = inputs["input_ids"]
         attention_mask = inputs["attention_mask"]
 
-        # Получаем эмбеддинги из модели
+        # Získajte vložené hodnoty z modelu
         embeddings = model.get_input_embeddings()(input_ids)
 
-        # Создаем forward-функцию для Captum
+        # Vytvorenie funkcie pre Captum
         def forward_func(input_embeds):
             return model(inputs_embeds=input_embeds, attention_mask=attention_mask).logits
 
-        # Создаем объяснитель Integrated Gradients
+        # Vytvorenie vysvetľujúcej funkcie pre Integrated Gradients
         ig = IntegratedGradients(forward_func)
 
-        # Вычисляем атрибуции
+        # Výpočet atribútov
         attributions, _ = ig.attribute(embeddings, target=0, return_convergence_delta=True)
-        attributions = attributions.sum(dim=-1).squeeze(0)  # Суммируем по последней оси
-        attributions = attributions / torch.norm(attributions)  # Нормализуем значения
+        attributions = attributions.sum(dim=-1).squeeze(0)  # Sumarizácia na poslednej osi
+        attributions = attributions / torch.norm(attributions)  # Normalizujte hodnoty
 
-        # Преобразуем токены и атрибуции
+        # Prevod tokenov a atribútov
         tokens = tokenizer.convert_ids_to_tokens(input_ids[0])
 
-        # Убираем служебные токены ([CLS], [SEP], [PAD])
+        # Odstránenie servisných tokenov ([CLS], [SEP], [PAD])
         filtered_tokens = []
         filtered_attributions = []
         for token, attr in zip(tokens, attributions.tolist()):
             if token in ["[CLS]", "[SEP]", "[PAD]"]:
-                continue  # Пропускаем служебные токены
+                continue  # Vynechajte servisné tokeny
             filtered_tokens.append(token)
             filtered_attributions.append(attr)
 
-        # Объединяем подтокены в слова
+        # Spojte čiastkové tokeny do slov
         merged_tokens, merged_attributions = merge_subtokens(filtered_tokens, filtered_attributions)
 
-        # Создаем график важности слов
+        # Vytvorenie grafu dôležitosti slov
         plt.figure(figsize=(10, 6))
         bars = plt.barh(merged_tokens, merged_attributions, color="skyblue", edgecolor='black')
 
-        # Добавляем числовые значения над столбцами
+        # Pridanie číselných hodnôt nad stĺpce
         for bar, attr in zip(bars, merged_attributions):
             plt.text(
-                bar.get_width() + 0.01,  # Смещение текста
-                bar.get_y() + bar.get_height() / 2,  # Центрируем текст по высоте
-                f"{attr:.2f}",  # Форматируем значение до двух знаков после запятой
-                va='center',  # Вертикальное выравнивание
-                ha='left',  # Горизонтальное выравнивание
-                fontsize=9  # Размер шрифта
+                bar.get_width() + 0.01,  # Odsunutie textu
+                bar.get_y() + bar.get_height() / 2,  # Vycentrovanie textu na výšku
+                f"{attr:.2f}",  # Formátovanie hodnoty na dve desatinné miesta
+                va='center',  # Vertikálne zarovnanie
+                ha='left',  # Vodorovné zarovnanie
+                fontsize=9  # Veľkosť písma
             )
 
-        # Добавляем заголовок и подписи осей
+        # Pridanie nadpisov záhlavia a osí
         plt.title("Integrated Gradients: Word Importance", fontsize=14, fontweight='bold')
         plt.xlabel("Attribution Score", fontsize=12)
         plt.ylabel("Words", fontsize=12)
 
-        # Убираем сетку и настраиваем внешний вид
+        # Odstránenie mriežky a prispôsobenie vzhľadu
         plt.grid(False)
         plt.tight_layout()
 
-        # Сохраняем график в виде base64
+        # Uloženie grafu ako base64
         buffer = BytesIO()
         plt.savefig(buffer, format="png", bbox_inches='tight')
         buffer.seek(0)
@@ -107,41 +107,41 @@ def generate_integrated_gradients_explanation(text):
 
 def generate_lime_explanation(text):
     try:
-        # Создаем объяснитель LIME
+        # Generovanie vysvetlivky LIME
         explainer = LimeTextExplainer(class_names=labels)
-        # Генерируем объяснение
+        # Generovanie vysvetlenia
         explanation = explainer.explain_instance(
             text,
             lambda x: predict_proba(x),
             num_features=10,
-            labels=[0]  # Анализируем только первый класс (токсичность)
+            labels=[0]  # Analýza len prvej triedy (toxicita)
         )
-        # Извлекаем важность слов
-        lime_features = explanation.as_list(label=0)  # Получаем список слов и их важности
-        tokens, importances = zip(*lime_features)  # Разделяем на токены и значения
-        # Создаем график
+        # Výber dôležitosti slov
+        lime_features = explanation.as_list(label=0)  # Získanie zoznamu slov a ich dôležitosti
+        tokens, importances = zip(*lime_features)  # Rozdelenie na tokeny a hodnoty
+        # Vytvorenie grafu
         plt.figure(figsize=(10, 6))
-        bars = plt.barh(tokens, importances, color="skyblue", edgecolor='black')  # Один цвет для всех слов
-        # Добавляем числовые значения над столбцами
+        bars = plt.barh(tokens, importances, color="skyblue", edgecolor='black')  # Jedna farba pre všetky slová
+        # Pridanie číselných hodnôt nad stĺpce
         for bar, imp in zip(bars, importances):
             plt.text(
-                bar.get_width() + 0.01,  # Смещение текста
-                bar.get_y() + bar.get_height() / 2,  # Центрируем текст по высоте
-                f"{imp:.2f}",  # Форматируем значение до двух знаков после запятой
-                va='center',  # Вертикальное выравнивание
-                ha='left',  # Горизонтальное выравнивание
-                fontsize=9  # Размер шрифта
+                bar.get_width() + 0.01,
+                bar.get_y() + bar.get_height() / 2,
+                f"{imp:.2f}",
+                va='center',
+                ha='left',
+                fontsize=9
             )
-        # Добавляем заголовок и подписи осей
+        # Pridanie nadpisu a nadpisov osí
         plt.title("LIME: Word Importance", fontsize=14, fontweight='bold')
         plt.xlabel("Importance Score", fontsize=12)
         plt.ylabel("Words", fontsize=12)
-        # Убираем сетку и настраиваем внешний вид
-        plt.grid(False)  # Убираем сетку
-        plt.tight_layout()  # Автоматически подгоняем элементы
-        # Сохраняем график в виде base64
+        # Odstránenie mriežky a prispôsobenie vzhľadu
+        plt.grid(False)  # Odstrániť mriežku
+        plt.tight_layout()  # Automatické prispôsobenie prvkov
+        # Uloženie grafu ako base64
         buffer = BytesIO()
-        plt.savefig(buffer, format="png", bbox_inches='tight')  # Убираем лишние отступы
+        plt.savefig(buffer, format="png", bbox_inches='tight')  # Odstránenie nadmerného odsadenia
         buffer.seek(0)
         image_png = buffer.getvalue()
         buffer.close()
@@ -153,18 +153,17 @@ def generate_lime_explanation(text):
 
 
 
-# Генерация объяснения SHAP
+# Generovanie vysvetlenia SHAP
 def generate_shap_explanation(text):
     try:
-        # Создаем объяснитель SHAP
         explainer = shap.Explainer(lambda x: predict_proba(x), shap.maskers.Text(tokenizer))
         shap_values = explainer([text])
         encoded = tokenizer(text, return_offsets_mapping=True)
-        words = tokenizer.convert_ids_to_tokens(encoded["input_ids"])[1:-1]  # Убираем [CLS] и [SEP]
+        words = tokenizer.convert_ids_to_tokens(encoded["input_ids"])[1:-1]  # Odstránenie [CLS] a [SEP]
         offsets = encoded["offset_mapping"][1:-1]
-        importances = shap_values.values[0].sum(axis=1)  # Суммируем значения по осям
+        importances = shap_values.values[0].sum(axis=1)  # Sumarizácia hodnôt na osiach
 
-        # Объединяем подтокены в слова
+        # Spojte čiastkové toky do slov
         word_importance = {}
         current_word = ""
         current_importance = 0
@@ -180,34 +179,32 @@ def generate_shap_explanation(text):
         if current_word:
             word_importance[current_word] = current_importance
 
-        # Преобразуем в DataFrame для удобства
+        # Prevod na DataFrame
         df = pd.DataFrame(list(word_importance.items()), columns=["Word", "Importance"])
 
-        # Создаем график
+        # Vytvorenie grafu
         plt.figure(figsize=(10, 6))
         bars = plt.barh(df["Word"], df["Importance"], color="skyblue", edgecolor='black')
 
-        # Добавляем числовые значения над столбцами
+        # Pridanie číselných hodnôt nad stĺpce
         for bar, imp in zip(bars, df["Importance"]):
             plt.text(
-                bar.get_width() + 0.01,  # Смещение текста
-                bar.get_y() + bar.get_height() / 2,  # Центрируем текст по высоте
-                f"{imp:.2f}",  # Форматируем значение до двух знаков после запятой
-                va='center',  # Вертикальное выравнивание
-                ha='left',  # Горизонтальное выравнивание
-                fontsize=9  # Размер шрифта
+                bar.get_width() + 0.01,
+                bar.get_y() + bar.get_height() / 2,
+                f"{imp:.2f}",
+                va='center',
+                ha='left',
+                fontsize=9
             )
 
-        # Добавляем заголовок и подписи осей
+        # Pridanie nadpisu a nadpisov osí
         plt.title("SHAP: Word Importance", fontsize=14, fontweight='bold')
         plt.xlabel("Importance Score", fontsize=12)
         plt.ylabel("Words", fontsize=12)
 
-        # Убираем сетку и настраиваем внешний вид
         plt.grid(False)
         plt.tight_layout()
 
-        # Сохраняем график в виде base64
         buffer = BytesIO()
         plt.savefig(buffer, format="png", bbox_inches='tight')
         buffer.seek(0)
@@ -223,19 +220,19 @@ def generate_shap_explanation(text):
 
 
 
-# Генерация объяснения DeepLift
+# Generovanie vysvetlení DeepLift
 def generate_deeplift_explanation(text):
     try:
-        # Токенизация текста
+        # Tokenizácia textu
         inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=512)
         input_ids = inputs['input_ids']
         attention_mask = inputs['attention_mask']
 
-        # Получаем эмбеддинги из модели
+        # Získanie vkladov z modelu
         with torch.no_grad():
             embeddings = model.get_input_embeddings()(input_ids)
 
-        # Создаем класс-обертку для forward_func
+        # Vytvorenie obalovej triedy pre forward_func
         class ModelWrapper(torch.nn.Module):
             def __init__(self, model):
                 super(ModelWrapper, self).__init__()
@@ -247,64 +244,60 @@ def generate_deeplift_explanation(text):
 
         wrapped_model = ModelWrapper(model)
 
-        # Создаем объяснитель DeepLift
+        # Vytvorenie vysvetľovacej triedy DeepLift
         deep_lift = DeepLift(wrapped_model)
 
-        # Определяем базовые значения (reference values)
+        # Definovanie referenčných hodnôt
         baseline_embeddings = torch.zeros_like(embeddings)
 
-        # Вычисляем атрибуции с помощью DeepLIFT
+        # Výpočet atribútov pomocou DeepLIFT
         attributions = deep_lift.attribute(
             inputs=embeddings,
             baselines=baseline_embeddings,
             additional_forward_args=(attention_mask,),
-            target=0  # target=0 для токсичного класса
+            target=0
         )
 
-        # Преобразуем атрибуции в читаемый формат
+        # Prevedenie atribútov do čitateľného formátu
         attributions = attributions.sum(dim=-1).squeeze(0)
         attributions = attributions / torch.norm(attributions)
 
-        # Визуализируем результат
+        # Vizualizácia výsledku
         tokens = tokenizer.convert_ids_to_tokens(input_ids[0])
 
-        # Убираем служебные токены ([CLS], [SEP], [PAD])
+        # Odstránenie servisných tokenov ([CLS], [SEP], [PAD])
         filtered_tokens = []
         filtered_attributions = []
         for token, attr in zip(tokens, attributions.tolist()):
             if token in ["[CLS]", "[SEP]", "[PAD]"]:
-                continue  # Пропускаем служебные токены
+                continue
             filtered_tokens.append(token)
             filtered_attributions.append(attr)
 
-        # Объединяем подтокены в слова
+        # Spojenie čiastkových tokenov do slov
         merged_tokens, merged_attributions = merge_subtokens(filtered_tokens, filtered_attributions)
 
-        # Создаем график важности слов
+        # Vytvorenie grafu dôležitosti slov
         plt.figure(figsize=(10, 6))
         bars = plt.barh(merged_tokens, merged_attributions, color="skyblue", edgecolor='black')
 
-        # Добавляем числовые значения над столбцами
         for bar, attr in zip(bars, merged_attributions):
             plt.text(
-                bar.get_width() + 0.01,  # Смещение текста
-                bar.get_y() + bar.get_height() / 2,  # Центрируем текст по высоте
-                f"{attr:.2f}",  # Форматируем значение до двух знаков после запятой
-                va='center',  # Вертикальное выравнивание
-                ha='left',  # Горизонтальное выравнивание
-                fontsize=9  # Размер шрифта
+                bar.get_width() + 0.01,
+                bar.get_y() + bar.get_height() / 2,
+                f"{attr:.2f}",
+                va='center',
+                ha='left',
+                fontsize=9
             )
 
-        # Добавляем заголовок и подписи осей
         plt.title("DeepLift: Word Importance", fontsize=14, fontweight='bold')
         plt.xlabel("Attribution Score", fontsize=12)
         plt.ylabel("Words", fontsize=12)
 
-        # Убираем сетку и настраиваем внешний вид
         plt.grid(False)
         plt.tight_layout()
 
-        # Сохраняем график в виде base64
         buffer = BytesIO()
         plt.savefig(buffer, format="png", bbox_inches='tight')
         buffer.seek(0)
@@ -319,9 +312,7 @@ def generate_deeplift_explanation(text):
 
 
 
-
-
-# Функция для объединения подтокенов в слова
+# Funkcia na spájanie čiastkových tokenov do slov
 def merge_subtokens(tokens, attributions):
     merged_tokens = []
     merged_attributions = []
@@ -345,7 +336,6 @@ def merge_subtokens(tokens, attributions):
 
     return merged_tokens, merged_attributions
 
-# Обновленная функция analyze_toxicity
 def analyze_toxicity(request):
     lime_explanation_image = None
     shap_explanation_image = None
@@ -357,15 +347,14 @@ def analyze_toxicity(request):
 
     if request.method == "POST":
         text = request.POST.get("text", "")
-        email = request.POST.get("email", "").strip()  # Получаем email
+        email = request.POST.get("email", "").strip()  # Získanie e-mailu
 
         if text:
-            # Получаем вердикт модели
             probabilities = predict_proba([text])[0]
-            toxic_probability = probabilities[0]  # Вероятность токсичности
+            toxic_probability = probabilities[0]  # Pravdepodobnosť toxicity
             model_verdict = "Toxic" if toxic_probability >= 0.5 else "Non-toxic"
 
-            # Генерация объяснений
+            # Generovanie vysvetlení
             try:
                 lime_explanation_image = generate_lime_explanation(text)
             except Exception as e:
@@ -383,9 +372,9 @@ def analyze_toxicity(request):
             except Exception as e:
                 integrated_gradients_explanation_image = f"<p>Error when generating an explanation of Integrated Gradients: {str(e)}</p>"
 
-        # Проверяем, были ли отправлены оценки
+        # Kontrola, či boli odoslané výsledky
         if "lime_explanation_goodness" in request.POST:
-            # Оценки для LIME
+            # Hodnoty pre LIME
             lime_explanation_goodness = int(request.POST.get("lime_explanation_goodness", 1))
             lime_user_satisfaction = int(request.POST.get("lime_user_satisfaction", 1))
             lime_user_understanding = int(request.POST.get("lime_user_understanding", 1))
@@ -394,7 +383,7 @@ def analyze_toxicity(request):
             lime_system_controllability = int(request.POST.get("lime_system_controllability", 1))
             lime_user_productivity = int(request.POST.get("lime_user_productivity", 1))
 
-            # Оценки для SHAP
+            # Hodnoty pre SHAP
             shap_explanation_goodness = int(request.POST.get("shap_explanation_goodness", 1))
             shap_user_satisfaction = int(request.POST.get("shap_user_satisfaction", 1))
             shap_user_understanding = int(request.POST.get("shap_user_understanding", 1))
@@ -403,7 +392,7 @@ def analyze_toxicity(request):
             shap_system_controllability = int(request.POST.get("shap_system_controllability", 1))
             shap_user_productivity = int(request.POST.get("shap_user_productivity", 1))
 
-            # Оценки для DeepLift
+            # Hodnoty pre DeepLift
             deeplift_explanation_goodness = int(request.POST.get("deeplift_explanation_goodness", 1))
             deeplift_user_satisfaction = int(request.POST.get("deeplift_user_satisfaction", 1))
             deeplift_user_understanding = int(request.POST.get("deeplift_user_understanding", 1))
@@ -412,7 +401,7 @@ def analyze_toxicity(request):
             deeplift_system_controllability = int(request.POST.get("deeplift_system_controllability", 1))
             deeplift_user_productivity = int(request.POST.get("deeplift_user_productivity", 1))
 
-            # Оценки для Integrated Gradients
+            # Hodnoty pre Integrated Gradients
             integrated_gradients_explanation_goodness = int(request.POST.get("integrated_gradients_explanation_goodness", 1))
             integrated_gradients_user_satisfaction = int(request.POST.get("integrated_gradients_user_satisfaction", 1))
             integrated_gradients_user_understanding = int(request.POST.get("integrated_gradients_user_understanding", 1))
@@ -421,9 +410,9 @@ def analyze_toxicity(request):
             integrated_gradients_system_controllability = int(request.POST.get("integrated_gradients_system_controllability", 1))
             integrated_gradients_user_productivity = int(request.POST.get("integrated_gradients_user_productivity", 1))
 
-            # Сохраняем оценки в базу данных
+            # Uloženie výsledkov do databázy
             UserRating.objects.create(
-                email=email or None,  # Если email пустой, сохраняем None
+                email=email or None,
                 text=text,
                 lime_explanation_goodness=lime_explanation_goodness,
                 lime_user_satisfaction=lime_user_satisfaction,
@@ -455,8 +444,8 @@ def analyze_toxicity(request):
                 integrated_gradients_user_productivity=integrated_gradients_user_productivity,
             )
 
-            # Перенаправляем пользователя на ту же страницу для сброса формы
-            return redirect("analyze_toxicity")  # Убедитесь, что у вас есть имя URL "analyze_toxicity"
+            #  Presmerovanie používateľa na tú istú stránku na obnovenie formulára
+            return redirect("analyze_toxicity")
 
     return render(request, "toxicity/index.html", {
         "lime_explanation_image": lime_explanation_image,

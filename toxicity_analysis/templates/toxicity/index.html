@@ -6,16 +6,15 @@
     <title>Toxicity Analysis</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-<!--    <link rel="stylesheet" href="style.css">-->
     <style>
-        /* Стиль для анимации загрузки */
+         /* Štýl pre načítanie animácie */
         .loading-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(50, 50, 50, 0.9); /* Темно-серый фон */
+            background-color: rgba(50, 50, 50, 0.9);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -29,8 +28,8 @@
             opacity: 1;
         }
         .spinner {
-            border: 8px solid #f3f3f3; /* Светлый фон */
-            border-top: 8px solid #3498db; /* Цвет спиннера */
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #3498db;
             border-radius: 50%;
             width: 60px;
             height: 60px;
@@ -41,28 +40,28 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Стиль для полей ввода */
+        /* Štýl pre vstupné polia */
         .input-field {
-            width: 100%; /* Занимает всю доступную ширину */
-            max-width: 400px; /* Фиксированная максимальная ширина */
-            padding: 10px; /* Внутренний отступ */
-            margin-bottom: 15px; /* Отступ снизу */
-            box-sizing: border-box; /* Учитываем padding в ширину */
-            font-size: 16px; /* Размер шрифта */
-            border: 1px solid #ccc; /* Граница */
-            border-radius: 5px; /* Скругленные углы */
+            width: 100%;
+            max-width: 400px;
+            padding: 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
 
-        /* Стиль для текстовой области */
+        /* Štýl pre textovú oblasť */
         textarea.input-field {
-            resize: none; /* Запрещаем изменение размера */
-            height: 100px; /* Фиксированная высота */
+            resize: none;
+            height: 100px;
         }
 
-        /* Стиль для кнопки отправки оценок */
+        /* Štýl pre tlačidlo odoslania výsledkov */
         #submit-ratings {
-            display: none; /* По умолчанию скрыта */
-            margin: 20px auto; /* Размещение по центру */
+            display: none;
+            margin: 20px auto;
             padding: 10px 20px;
             background-color: #3498db;
             color: white;
@@ -73,12 +72,12 @@
     </style>
 </head>
 <body>
-    <!-- Кнопка для показа/скрытия инструкций -->
+    <!-- Tlačidlo na zobrazenie/skrytie pokynov -->
     <button id="toggle-instructions" style="margin-bottom: 20px; padding: 10px 15px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
         Show Instructions
     </button>
 
-    <!-- Руководство по использованию (изначально скрыто) -->
+    <!-- Návod na použitie (pôvodne skrytý) -->
     <div id="instructions" style="display: none; margin-bottom: 20px; font-size: 14px; line-height: 1.6;">
         <h3>Instructions for Use</h3>
         <p>
@@ -105,7 +104,7 @@
             Note: The tool works best with clear and grammatically correct sentences. Avoid using special characters or non-English words for accurate results.
         </p>
     </div>
-    <!-- Форма для анализа текста -->
+    <!-- Formulár na analýzu textu -->
     <form id="analysis-form" method="post" action="">
         {% csrf_token %}
         <div class="form-group">
@@ -117,27 +116,27 @@
         <button type="submit">Analyse</button>
     </form>
 
-    <!-- Анимация загрузки -->
+    <!-- Animácia načítania -->
     <div id="loading-overlay" class="loading-overlay">
         <div class="spinner"></div>
     </div>
 
-    <!-- Результаты анализа -->
+    <!-- Výsledky analýzy -->
     <div id="results">
-        <!-- Вердикт модели -->
-        {% if model_verdict %}
+        <!-- Verdikt modelu -->
+        {% if model_verdict%}
             <div style="margin-bottom: 20px;">
             <br>
                 <strong>Model Verdict:</strong> {{ model_verdict }}
             </div>
         {% endif %}
 
-        <!-- Объяснения и шкалы оценок -->
-        {% if lime_explanation_image %}
+        <!-- Vysvetlenia a stupnice hodnotenia -->
+        {% if lime_explanation_image and model_verdict == "Toxic"%}
             <h3>LIME Explanation</h3>
             <img src="data:image/png;base64,{{ lime_explanation_image }}" alt="LIME Explanation">
             <br>
-            <!-- Question 1: Explanation Goodness -->
+            <!-- Otázka 1 -->
             <label for="lime_explanation_goodness">
                 How well did the explanation help you understand the model's decision?
             </label>
@@ -149,7 +148,7 @@
                 <option value="5">Completely</option>
             </select><br>
 
-            <!-- Question 2: User Satisfaction -->
+            <!-- Otázka 2 -->
             <label for="lime_user_satisfaction">
                 How satisfied are you with the provided explanation?
             </label>
@@ -161,7 +160,7 @@
                 <option value="5">Completely satisfied</option>
             </select><br>
 
-            <!-- Question 3: User Understanding -->
+            <!-- Otázka 3 -->
             <label for="lime_user_understanding">
                 How easy was it for you to understand the explanation?
             </label>
@@ -173,7 +172,7 @@
                 <option value="5">Completely easy</option>
             </select><br>
 
-            <!-- Question 4: User Curiosity/Attention Engagement -->
+            <!-- Otázka 4 -->
             <label for="lime_user_curiosity">
                 Did the explanation spark your interest to learn more about the system?
             </label>
@@ -185,7 +184,7 @@
                 <option value="5">Extremely</option>
             </select><br>
 
-            <!-- Question 5: User Trust/Reliance -->
+            <!-- Otázka 5 -->
             <label for="lime_user_trust">
                 How much do you trust the model's decision after seeing the explanation?
             </label>
@@ -197,7 +196,7 @@
                 <option value="5">Completely</option>
             </select><br>
 
-            <!-- Question 6: System Controllability/Interactivity -->
+            <!-- Otázka 6 -->
             <label for="lime_system_controllability">
                 How easy was it for you to interact with the system to get explanations?
             </label>
@@ -209,7 +208,7 @@
                 <option value="5">Completely easy</option>
             </select><br>
 
-            <!-- Question 7: User Performance/Productivity -->
+            <!-- Otázka 7 -->
             <label for="lime_user_productivity">
                 How much did the explanation improve your ability to work with the system?
             </label>
@@ -223,11 +222,10 @@
         {% endif %}
 
 
-        {% if shap_explanation_image %}
+        {% if shap_explanation_image and model_verdict == "Toxic"%}
             <h3>SHAP Explanation</h3>
             <img src="data:image/png;base64,{{ shap_explanation_image }}" alt="SHAP Explanation">
             <br>
-            <!-- Question 1: Explanation Goodness -->
             <label for="shap_explanation_goodness">
                 How well did the explanation help you understand the model's decision?
             </label>
@@ -239,7 +237,6 @@
                 <option value="5">Completely</option>
             </select><br>
 
-            <!-- Question 2: User Satisfaction -->
             <label for="shap_user_satisfaction">
                 How satisfied are you with the provided explanation?
             </label>
@@ -251,7 +248,6 @@
                 <option value="5">Completely satisfied</option>
             </select><br>
 
-            <!-- Question 3: User Understanding -->
             <label for="shap_user_understanding">
                 How easy was it for you to understand the explanation?
             </label>
@@ -263,7 +259,6 @@
                 <option value="5">Completely easy</option>
             </select><br>
 
-            <!-- Question 4: User Curiosity/Attention Engagement -->
             <label for="shap_user_curiosity">
                 Did the explanation spark your interest to learn more about the system?
             </label>
@@ -275,7 +270,6 @@
                 <option value="5">Extremely</option>
             </select><br>
 
-            <!-- Question 5: User Trust/Reliance -->
             <label for="shap_user_trust">
                 How much do you trust the model's decision after seeing the explanation?
             </label>
@@ -287,7 +281,6 @@
                 <option value="5">Completely</option>
             </select><br>
 
-            <!-- Question 6: System Controllability/Interactivity -->
             <label for="shap_system_controllability">
                 How easy was it for you to interact with the system to get explanations?
             </label>
@@ -299,7 +292,6 @@
                 <option value="5">Completely easy</option>
             </select><br>
 
-            <!-- Question 7: User Performance/Productivity -->
             <label for="shap_user_productivity">
                 How much did the explanation improve your ability to work with the system?
             </label>
@@ -313,11 +305,10 @@
         {% endif %}
 
 
-        {% if deeplift_explanation_image %}
+        {% if deeplift_explanation_image and model_verdict == "Toxic"%}
             <h3>DeepLift Explanation</h3>
             <img src="data:image/png;base64,{{ deeplift_explanation_image }}" alt="DeepLift Explanation">
             <br>
-            <!-- Question 1: Explanation Goodness -->
             <label for="deeplift_explanation_goodness">
                 How well did the explanation help you understand the model's decision?
             </label>
@@ -329,7 +320,6 @@
                 <option value="5">Completely</option>
             </select><br>
 
-            <!-- Question 2: User Satisfaction -->
             <label for="deeplift_user_satisfaction">
                 How satisfied are you with the provided explanation?
             </label>
@@ -341,7 +331,6 @@
                 <option value="5">Completely satisfied</option>
             </select><br>
 
-            <!-- Question 3: User Understanding -->
             <label for="deeplift_user_understanding">
                 How easy was it for you to understand the explanation?
             </label>
@@ -353,7 +342,6 @@
                 <option value="5">Completely easy</option>
             </select><br>
 
-            <!-- Question 4: User Curiosity/Attention Engagement -->
             <label for="deeplift_user_curiosity">
                 Did the explanation spark your interest to learn more about the system?
             </label>
@@ -365,7 +353,6 @@
                 <option value="5">Extremely</option>
             </select><br>
 
-            <!-- Question 5: User Trust/Reliance -->
             <label for="deeplift_user_trust">
                 How much do you trust the model's decision after seeing the explanation?
             </label>
@@ -377,7 +364,6 @@
                 <option value="5">Completely</option>
             </select><br>
 
-            <!-- Question 6: System Controllability/Interactivity -->
             <label for="deeplift_system_controllability">
                 How easy was it for you to interact with the system to get explanations?
             </label>
@@ -389,7 +375,6 @@
                 <option value="5">Completely easy</option>
             </select><br>
 
-            <!-- Question 7: User Performance/Productivity -->
             <label for="deeplift_user_productivity">
                 How much did the explanation improve your ability to work with the system?
             </label>
@@ -405,11 +390,10 @@
         {% endif %}
 
 
-        {% if integrated_gradients_explanation_image %}
+        {% if integrated_gradients_explanation_image and model_verdict == "Toxic"%}
             <h3>Integrated Gradients Explanation</h3>
             <img src="data:image/png;base64,{{ integrated_gradients_explanation_image }}" alt="Integrated Gradients Explanation">
             <br>
-            <!-- Question 1: Explanation Goodness -->
             <label for="integrated_gradients_explanation_goodness">
                 How well did the explanation help you understand the model's decision?
             </label>
@@ -421,7 +405,6 @@
                 <option value="5">Completely</option>
             </select><br>
 
-            <!-- Question 2: User Satisfaction -->
             <label for="integrated_gradients_user_satisfaction">
                 How satisfied are you with the provided explanation?
             </label>
@@ -433,7 +416,6 @@
                 <option value="5">Completely satisfied</option>
             </select><br>
 
-            <!-- Question 3: User Understanding -->
             <label for="integrated_gradients_user_understanding">
                 How easy was it for you to understand the explanation?
             </label>
@@ -445,7 +427,6 @@
                 <option value="5">Completely easy</option>
             </select><br>
 
-            <!-- Question 4: User Curiosity/Attention Engagement -->
             <label for="integrated_gradients_user_curiosity">
                 Did the explanation spark your interest to learn more about the system?
             </label>
@@ -457,7 +438,6 @@
                 <option value="5">Extremely</option>
             </select><br>
 
-            <!-- Question 5: User Trust/Reliance -->
             <label for="integrated_gradients_user_trust">
                 How much do you trust the model's decision after seeing the explanation?
             </label>
@@ -469,7 +449,6 @@
                 <option value="5">Completely</option>
             </select><br>
 
-            <!-- Question 6: System Controllability/Interactivity -->
             <label for="integrated_gradients_system_controllability">
                 How easy was it for you to interact with the system to get explanations?
             </label>
@@ -481,7 +460,6 @@
                 <option value="5">Completely easy</option>
             </select><br>
 
-            <!-- Question 7: User Performance/Productivity -->
             <label for="integrated_gradients_user_productivity">
                 How much did the explanation improve your ability to work with the system?
             </label>
@@ -495,108 +473,109 @@
 
         {% endif %}
 
+        {% if model_verdict == "Toxic"%}
+            <!-- Formulár na odosielanie hodnotení -->
+            <form id="ratings-form" method="post" action="">
+                {% csrf_token %}
+                <input type="hidden" name="email" value="{{ email }}">
+                <input type="hidden" name="text" value="{{ text }}">
 
-        <!-- Форма для отправки оценок -->
-        <form id="ratings-form" method="post" action="">
-            {% csrf_token %}
-            <input type="hidden" name="email" value="{{ email }}"> <!-- Добавляем email -->
-            <input type="hidden" name="text" value="{{ text }}"> <!-- Добавляем текст -->
+                <!-- LIME Metrics -->
+                <input type="hidden" id="lime_explanation_goodness_hidden" name="lime_explanation_goodness" value="1">
+                <input type="hidden" id="lime_user_satisfaction_hidden" name="lime_user_satisfaction" value="1">
+                <input type="hidden" id="lime_user_understanding_hidden" name="lime_user_understanding" value="1">
+                <input type="hidden" id="lime_user_curiosity_hidden" name="lime_user_curiosity" value="1">
+                <input type="hidden" id="lime_user_trust_hidden" name="lime_user_trust" value="1">
+                <input type="hidden" id="lime_system_controllability_hidden" name="lime_system_controllability" value="1">
+                <input type="hidden" id="lime_user_productivity_hidden" name="lime_user_productivity" value="1">
 
-            <!-- LIME Metrics -->
-            <input type="hidden" id="lime_explanation_goodness_hidden" name="lime_explanation_goodness" value="1">
-            <input type="hidden" id="lime_user_satisfaction_hidden" name="lime_user_satisfaction" value="1">
-            <input type="hidden" id="lime_user_understanding_hidden" name="lime_user_understanding" value="1">
-            <input type="hidden" id="lime_user_curiosity_hidden" name="lime_user_curiosity" value="1">
-            <input type="hidden" id="lime_user_trust_hidden" name="lime_user_trust" value="1">
-            <input type="hidden" id="lime_system_controllability_hidden" name="lime_system_controllability" value="1">
-            <input type="hidden" id="lime_user_productivity_hidden" name="lime_user_productivity" value="1">
+                <!-- SHAP Metrics -->
+                <input type="hidden" id="shap_explanation_goodness_hidden" name="shap_explanation_goodness" value="1">
+                <input type="hidden" id="shap_user_satisfaction_hidden" name="shap_user_satisfaction" value="1">
+                <input type="hidden" id="shap_user_understanding_hidden" name="shap_user_understanding" value="1">
+                <input type="hidden" id="shap_user_curiosity_hidden" name="shap_user_curiosity" value="1">
+                <input type="hidden" id="shap_user_trust_hidden" name="shap_user_trust" value="1">
+                <input type="hidden" id="shap_system_controllability_hidden" name="shap_system_controllability" value="1">
+                <input type="hidden" id="shap_user_productivity_hidden" name="shap_user_productivity" value="1">
 
-            <!-- SHAP Metrics -->
-            <input type="hidden" id="shap_explanation_goodness_hidden" name="shap_explanation_goodness" value="1">
-            <input type="hidden" id="shap_user_satisfaction_hidden" name="shap_user_satisfaction" value="1">
-            <input type="hidden" id="shap_user_understanding_hidden" name="shap_user_understanding" value="1">
-            <input type="hidden" id="shap_user_curiosity_hidden" name="shap_user_curiosity" value="1">
-            <input type="hidden" id="shap_user_trust_hidden" name="shap_user_trust" value="1">
-            <input type="hidden" id="shap_system_controllability_hidden" name="shap_system_controllability" value="1">
-            <input type="hidden" id="shap_user_productivity_hidden" name="shap_user_productivity" value="1">
+                <!-- DeepLift Metrics -->
+                <input type="hidden" id="deeplift_explanation_goodness_hidden" name="deeplift_explanation_goodness" value="1">
+                <input type="hidden" id="deeplift_user_satisfaction_hidden" name="deeplift_user_satisfaction" value="1">
+                <input type="hidden" id="deeplift_user_understanding_hidden" name="deeplift_user_understanding" value="1">
+                <input type="hidden" id="deeplift_user_curiosity_hidden" name="deeplift_user_curiosity" value="1">
+                <input type="hidden" id="deeplift_user_trust_hidden" name="deeplift_user_trust" value="1">
+                <input type="hidden" id="deeplift_system_controllability_hidden" name="deeplift_system_controllability" value="1">
+                <input type="hidden" id="deeplift_user_productivity_hidden" name="deeplift_user_productivity" value="1">
 
-            <!-- DeepLift Metrics -->
-            <input type="hidden" id="deeplift_explanation_goodness_hidden" name="deeplift_explanation_goodness" value="1">
-            <input type="hidden" id="deeplift_user_satisfaction_hidden" name="deeplift_user_satisfaction" value="1">
-            <input type="hidden" id="deeplift_user_understanding_hidden" name="deeplift_user_understanding" value="1">
-            <input type="hidden" id="deeplift_user_curiosity_hidden" name="deeplift_user_curiosity" value="1">
-            <input type="hidden" id="deeplift_user_trust_hidden" name="deeplift_user_trust" value="1">
-            <input type="hidden" id="deeplift_system_controllability_hidden" name="deeplift_system_controllability" value="1">
-            <input type="hidden" id="deeplift_user_productivity_hidden" name="deeplift_user_productivity" value="1">
+                <!-- Integrated Gradients Metrics -->
+                <input type="hidden" id="integrated_gradients_explanation_goodness_hidden" name="integrated_gradients_explanation_goodness" value="1">
+                <input type="hidden" id="integrated_gradients_user_satisfaction_hidden" name="integrated_gradients_user_satisfaction" value="1">
+                <input type="hidden" id="integrated_gradients_user_understanding_hidden" name="integrated_gradients_user_understanding" value="1">
+                <input type="hidden" id="integrated_gradients_user_curiosity_hidden" name="integrated_gradients_user_curiosity" value="1">
+                <input type="hidden" id="integrated_gradients_user_trust_hidden" name="integrated_gradients_user_trust" value="1">
+                <input type="hidden" id="integrated_gradients_system_controllability_hidden" name="integrated_gradients_system_controllability" value="1">
+                <input type="hidden" id="integrated_gradients_user_productivity_hidden" name="integrated_gradients_user_productivity" value="1">
 
-            <!-- Integrated Gradients Metrics -->
-            <input type="hidden" id="integrated_gradients_explanation_goodness_hidden" name="integrated_gradients_explanation_goodness" value="1">
-            <input type="hidden" id="integrated_gradients_user_satisfaction_hidden" name="integrated_gradients_user_satisfaction" value="1">
-            <input type="hidden" id="integrated_gradients_user_understanding_hidden" name="integrated_gradients_user_understanding" value="1">
-            <input type="hidden" id="integrated_gradients_user_curiosity_hidden" name="integrated_gradients_user_curiosity" value="1">
-            <input type="hidden" id="integrated_gradients_user_trust_hidden" name="integrated_gradients_user_trust" value="1">
-            <input type="hidden" id="integrated_gradients_system_controllability_hidden" name="integrated_gradients_system_controllability" value="1">
-            <input type="hidden" id="integrated_gradients_user_productivity_hidden" name="integrated_gradients_user_productivity" value="1">
-
-            <button type="submit" id="submit-ratings" style="display: none;">Send evaluations</button>
-        </form>
+                <button type="submit" id="submit-ratings" style="display: none;">Send evaluations</button>
+            </form>
+            <button id="back-to-top" style="
+            display: none; /* Изначально скрыта */
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 1000;
+        ">
+                ↑ Back to Top
+            </button>
+        {% endif %}
     </div>
-    <button id="back-to-top" style="
-        display: none; /* Изначально скрыта */
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        padding: 10px 15px;
-        background-color: #3498db;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-        z-index: 1000;
-    ">
-        ↑ Back to Top
-    </button>
 
     <script>
 
         document.getElementById('toggle-instructions').addEventListener('click', function () {
             const instructions = document.getElementById('instructions');
             if (instructions.style.display === 'none') {
-                instructions.style.display = 'block'; // Показываем инструкции
-                this.textContent = 'Hide Instructions'; // Меняем текст кнопки
+                instructions.style.display = 'block';
+                this.textContent = 'Hide Instructions';
             } else {
-                instructions.style.display = 'none'; // Скрываем инструкции
-                this.textContent = 'Show Instructions'; // Меняем текст кнопки
+                instructions.style.display = 'none';
+                this.textContent = 'Show Instructions';
             }
         });
-        // Проверка наличия email после загрузки страницы
+        // Kontrola e-mailu po načítaní stránky
         document.addEventListener('DOMContentLoaded', function () {
-            const email = "{{ email }}".trim(); // Удаляем лишние пробелы
+            const email = "{{ email }}".trim(); // Odstránenie nadbytočných medzier
             if (email) {
-                // Показываем шкалы оценок
+                // Zobraziť stupnice hodnotenia
                 document.querySelectorAll('.rating-container').forEach(container => {
                     container.style.display = 'block';
                 });
-                // Показываем кнопку отправки оценок
+                // Zobraziť tlačidlo na odoslanie hodnotenia
                 document.getElementById('submit-ratings').style.display = 'block';
             }
         });
 
-        // Показывать анимацию загрузки при отправке формы
+            // Zobrazenie animácie načítania pri odosielaní formulára
         document.getElementById('analysis-form').addEventListener('submit', function () {
             const loadingOverlay = document.getElementById('loading-overlay');
-            loadingOverlay.classList.add('active'); // Показываем оверлей
+            loadingOverlay.classList.add('active'); // Zobraziť prekrytie
         });
 
-        // Скрывать анимацию загрузки после завершения анализа
+        // Skryť animáciu načítania po dokončení analýzy
         window.addEventListener('load', function () {
             const loadingOverlay = document.getElementById('loading-overlay');
-            loadingOverlay.classList.remove('active'); // Скрываем оверлей
+            loadingOverlay.classList.remove('active'); // Skryť prekrytie
         });
 
         document.addEventListener('DOMContentLoaded', function () {
-    // Обновляем значения скрытых полей при изменении выпадающих списков
+    // Aktualizácia hodnôt skrytých polí pri zmene rozbaľovacích zoznamov
         document.querySelectorAll('select').forEach(select => {
             const hiddenField = document.getElementById(`${select.id}_hidden`);
             if (hiddenField) {
@@ -607,21 +586,21 @@
         });
     });
 
-        // Показать/скрыть кнопку при прокрутке
+        //  Zobraziť/skryť tlačidlo pri posúvaní
 window.addEventListener('scroll', function () {
     const backToTopButton = document.getElementById('back-to-top');
-    if (window.scrollY > 300) { // Показать, если прокручено больше 300px
+    if (window.scrollY > 300) { // Zobraziť, ak sa posúva viac ako 300px
         backToTopButton.style.display = 'block';
     } else {
         backToTopButton.style.display = 'none';
     }
 });
 
-// Прокрутка наверх при клике
+// Posúvanie nahor pri kliknutí
 document.getElementById('back-to-top').addEventListener('click', function () {
     window.scrollTo({
         top: 0,
-        behavior: 'smooth' // Плавная прокрутка
+        behavior: 'smooth' // Plynulé posúvanie
     });
 });
 

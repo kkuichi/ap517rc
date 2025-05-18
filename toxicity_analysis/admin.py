@@ -3,20 +3,20 @@ from .models import UserRating
 
 @admin.register(UserRating)
 class UserRatingAdmin(admin.ModelAdmin):
-    # Поля, которые будут отображаться в списке записей
+    # Polia, ktoré sa majú zobraziť v zozname záznamov
     list_display = (
         'email', 'text',
         'lime_rating', 'shap_rating', 'deeplift_rating', 'integrated_gradients_rating',
         'created_at'
     )
 
-    # Поля для поиска
+    # Vyhľadávacie polia
     search_fields = ('email', 'text')
 
-    # Фильтры
+    # Filtre
     list_filter = ('created_at',)
 
-    # Группировка полей в форме редактирования
+    # Zoskupenie polí vo formulári na úpravu
     fieldsets = (
         ('General Information', {
             'fields': ('email', 'text', 'created_at')
@@ -50,5 +50,5 @@ class UserRatingAdmin(admin.ModelAdmin):
         }),
     )
 
-    # Сделать поле created_at только для чтения
+    # Pole created_at je určené len na čítanie
     readonly_fields = ('created_at',)
