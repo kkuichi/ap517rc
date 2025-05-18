@@ -1,0 +1,45 @@
+id,text,deeplift_explanation_goodness,deeplift_system_controllability,deeplift_user_curiosity,deeplift_user_productivity,deeplift_user_satisfaction,deeplift_user_trust,deeplift_user_understanding,integrated_gradients_explanation_goodness,integrated_gradients_system_controllability,integrated_gradients_user_curiosity,integrated_gradients_user_productivity,integrated_gradients_user_satisfaction,integrated_gradients_user_trust,integrated_gradients_user_understanding,lime_explanation_goodness,lime_system_controllability,lime_user_curiosity,lime_user_productivity,lime_user_satisfaction,lime_user_trust,lime_user_understanding,shap_explanation_goodness,shap_system_controllability,shap_user_curiosity,shap_user_productivity,shap_user_satisfaction,shap_user_trust,shap_user_understanding
+2,"You are shit, fucking nigger",3,3,3,3,3,3,3,3,3,3,3.0,3,3,3,5,4,5,5,5,5,5,5,5,5,5,5,5,5
+3,Hello nigger! How are you?,3,3,3,3,3,3,3,3,3,3,3.0,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3
+4,I hate niggers,1,1,1,1,1,1,1,1,1,1,1.0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+5,i hate all nations,4,4,4,4,4,4,4,4,4,4,4.0,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5
+6,I hate you so much,3,1,4,2,2,4,5,3,3,4,5.0,4,2,5,4,1,3,2,4,5,2,2,4,3,2,3,5,2
+7,You are such a nigger,5,3,3,3,5,3,3,4,3,4,4.0,5,4,4,5,3,4,5,4,2,5,5,5,5,4,4,4,4
+8,Kill yourself loser,5,5,5,5,4,5,5,1,4,4,4.0,3,5,5,4,3,4,4,2,5,3,5,1,5,2,5,1,4
+9,Fuck off and die,5,2,4,3,5,3,4,4,4,4,4.0,3,5,4,4,3,4,4,2,5,3,2,4,2,5,3,3,4
+10,Hope you choke on it,5,4,4,4,5,4,4,3,4,5,3.0,3,5,3,5,4,2,5,4,3,5,3,5,5,5,5,5,4
+11,Go to hell bitch,3,5,2,5,3,4,3,3,4,4,5.0,2,5,3,4,4,4,5,4,4,4,4,3,3,3,4,3,4
+12,Die in a fire,5,4,5,3,5,5,5,4,4,4,3.0,5,3,5,4,3,4,5,2,5,3,5,2,3,2,5,2,4
+13,You stupid idiot,3,4,3,3,4,4,3,4,3,3,3.0,3,3,2,4,3,4,4,2,2,3,3,3,2,4,4,4,3
+14,Shut up moron,3,2,3,3,3,4,3,3,3,3,3.0,3,3,3,4,3,2,3,2,3,4,3,3,3,3,3,3,3
+15,You disgust me,4,2,4,3,4,4,5,4,2,4,3.0,2,3,3,4,3,4,4,2,2,3,5,3,4,3,4,2,5
+16,You are a disgrace,3,4,5,3,4,5,5,3,4,5,3.0,2,4,3,4,5,5,5,2,2,4,4,2,3,3,4,3,4
+17,I hope you die,4,2,2,3,4,5,1,5,1,2,2.0,4,2,5,1,2,5,2,2,4,3,3,1,3,1,4,4,5
+18,Go to hell,4,2,4,3,4,5,5,4,4,2,5.0,4,3,4,4,5,5,4,4,4,5,4,3,4,4,2,4,4
+19,You are worthless,4,5,4,4,5,4,3,4,4,4,2.0,4,4,2,4,2,5,3,2,4,3,4,5,3,2,5,4,2
+20,Fuck you forever,5,3,3,4,5,2,4,4,2,5,3.0,2,4,3,4,5,5,5,5,2,4,5,4,4,2,4,5,4
+21,Burn in hell,3,5,3,3,4,4,5,4,4,5,2.0,5,5,2,4,4,2,4,4,4,4,3,2,5,4,2,3,4
+22,You are pathetic,4,3,4,2,5,2,2,3,4,5,4.0,4,4,5,4,2,4,4,2,3,1,3,2,5,3,4,4,2
+23,I despise you,4,4,2,2,5,4,3,3,3,4,4.0,2,2,3,2,3,4,5,3,2,5,4,2,6,3,2,4,3
+24,You make me sick,3,3,4,2,2,2,5,3,2,4,3.0,2,3,5,2,3,4,2,3,2,5,2,3,4,2,3,2,5
+25,You are trash,5,3,3,2,4,3,4,4,2,5,3.0,4,3,4,5,3,4,3,5,5,4,4,4,2,3,5,5,3
+26,"You are shit, fucking nigger",4,2,2,2,4,2,4,4,2,4,4.0,4,2,2,4,5,5,4,5,5,5,3,3,4,3,3,4,3
+31,i believe that all gypsies must be burned,4,4,4,3,5,3,4,4,3,5,3.0,3,3,4,5,4,4,4,4,4,5,3,2,5,4,3,4,5
+32,all gypsis must die,5,4,4,5,4,5,5,4,3,3,3.0,5,3,3,5,4,5,4,5,4,5,5,4,5,4,5,5,5
+33,i hate womens,2,2,3,2,2,2,2,4,3,3,3.0,4,2,4,5,5,5,5,5,5,5,5,3,5,2,5,3,2
+34,You are a complete moron,4,2,3,4,3,2,4,4,5,5,4.0,2,5,3,4,4,4,4,4,4,4,3,2,4,5,4,4,5
+35,I hate everything about you,4,4,2,3,4,2,2,4,3,2,4.0,5,3,4,5,5,5,5,5,4,5,4,3,4,5,4,4,4
+36,You should be ashamed of yourself,4,5,4,2,3,5,5,3,4,4,4.0,2,4,4,4,3,3,4,4,4,4,4,4,2,3,3,3,4
+37,"Nobody likes you, give up",4,4,4,3,2,3,3,4,3,3,3.0,3,4,4,4,4,4,4,3,5,3,3,3,3,3,3,3,3
+38,You are the worst person alive,3,2,2,2,3,2,3,3,3,4,3.0,2,3,3,4,5,5,5,4,5,5,4,3,4,2,3,5,3
+39,Your existence is a mistake,4,4,4,4,4,5,5,4,5,4,4.0,2,4,3,4,3,4,4,4,2,5,5,5,3,4,5,4,4
+40,I wish you would disappear,5,5,3,4,4,4,2,4,2,5,5.0,4,3,4,4,5,5,4,4,4,4,4,4,2,4,3,3,4
+41,You are nothing but a loser,4,2,2,3,3,4,2,4,4,4,3.0,2,3,3,4,4,5,4,4,4,4,4,3,3,4,4,3,4
+42,You deserve to be alone forever,4,3,4,3,5,3,3,4,3,2,3.0,4,3,3,4,5,5,5,3,5,4,4,3,3,4,4,3,2
+43,You are a waste of space,4,3,2,3,5,3,4,3,3,3,,3,3,3,4,3,5,4,5,4,4,4,5,3,4,4,4,5
+44,You will loose today,3,4,4,3,3,3,4,4,4,4,3.0,4,4,4,5,4,5,4,5,4,5,4,3,4,4,4,4,4
+46,"Burn in hell, nigger",4,3,3,2,2,3,3,4,2,4,4.0,4,2,4,4,3,4,4,3,4,4,3,4,2,4,3,2,3
+47,"ypu are looser, bitch",4,2,4,3,4,3,4,3,4,4,3.0,4,3,4,4,4,5,3,5,5,5,5,4,4,3,4,4,4
+48,"You're so stupid, I can't believe you actually thought that would work",4,3,4,4,4,4,4,4,4,4,3.0,3,4,3,4,5,4,3,3,5,4,4,2,3,3,4,3,4
+49,Why do you even try? You’re useless,2,2,2,3,2,2,2,4,3,3,3.0,3,3,4,4,3,3,3,4,3,3,4,3,3,3,4,3,3
+50,"Go back to your country, we don’t need people like you here",4,4,4,3,4,4,4,3,3,3,4.0,3,3,3,4,4,4,3,3,5,4,3,3,4,3,3,4,2
